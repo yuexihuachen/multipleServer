@@ -1,0 +1,25 @@
+<link rel='stylesheet' href='/stylesheets/style.css' />
+<h1>{{title}}</h1>
+<textarea id="htmlText" cols="100" rows="20">
+
+</textarea>
+<h1>{{content}}</h1>
+<textarea id="jsText" cols="100" rows="30">
+</textarea>
+
+<h1>route</h1>
+<select id="state">
+    {{#each pageList}}
+        <option>{{this}}</option>
+    {{/each}}
+</select>
+
+<h1>upload file</h1>
+<p>
+<input type="file" id="input">
+</p>
+
+
+<button id="submit">提交</button>
+
+<script src="/javascripts/index.js"></script>

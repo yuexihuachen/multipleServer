@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Go + WebAssembly</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="no">
+    <script src="/videotoimg/wasm_exec.js"></script>
+    <style>
+        html,body {
+            padding: 0;
+            margin:0;
+        }
+        #canvas {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <video id="video" autoplay></video>
+        <button id="snap">Snap Photo</button>
+        <canvas id="canvas" width="1280" height="720"></canvas>
+    </div>
+</body>
+<script>
+    var aVideo = document.getElementById('video');
+    var aCanvas = document.getElementById('canvas');
+    var ctx = aCanvas.getContext('2d');
+
+    const faceMode = Math.random() > 0.5 ? 'environment' : 'user'
+
+    navigator.getUserMedia = navigator.getUserMedia ||
+        navigator.webkitGetUserMedia ||
+        navigator.mozGetUserMedia ||
+        navigator.msGetUserMedia ||
+        window.RTCPeerConnection
+    navigator.getUserMedia({ video: {
+        facingMode: faceMode,
+        width: {
+            ideal: 1280
+        }
+    } }, gotStream, noStream);
+    function gotStream(stream) {
+        video.srcObject = stream;
+        video.onerror = function () {
+            stream.stop();
+        };
+        stream.onended = noStream;
+        video.onloadedmetadata = function () {
+            console.log('摄像头成功打开！');
+        };
+    }
+    function noStream(err) {
+        alert(err);
+    }
+
+    const gooe = new Go();
+
+    WebAssembly.instantiateStreaming(fetch("/users/getWasmBuffer?fileName=lib.wasm"), gooe.importObject)
+        .then((result) => {
+            gooe.run(result.instance);
+        });
+
+    fetch('/users/getWasmBuffer').then(response =>
+        response.arrayBuffer()
+    ).then(bytes =>
+        WebAssembly.instantiate(bytes)
+    ).then(obj => {
+        gooe.run(result.instance);
+    });
+
+    const snap = document.getElementById("snap")
+    snap.onclick = function () {
+        const { image } = goTakePicture()
+        let img = document.createElement("img");
+        img.width = 1280;
+        img.height = 720;
+        snap.after(img)
+        img.src = image
+    }
+
+// GOARCH=wasm GOOS=js go build -o lib.wasm main.go
+// cp "$(go env GOROOT)/misc/wasm/wasm_exec.js" .  
+</script>
+
+</html>
