@@ -11,7 +11,7 @@ services:
         ports:
             - "5001:5001"
         volumes:
-            - /Users/yuexihuachen/Documents/project/app:/usr/src/wrokspace/pdfs
+            - /home/guozishu/pdfbooks:/usr/src/wrokspace/pdfs
     nginx:
         restart: always
         build:
