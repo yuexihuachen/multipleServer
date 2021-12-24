@@ -1,9 +1,12 @@
 const express = require('express')
 const fileUpload = require('express-fileupload')
 const fs = require("fs")
+const cookieParser = require('cookie-parser')
+
 const app = express()
 const port = 5001
 
+app.use(cookieParser())
 app.use(express.static('.'));
 app.use(express.json({
   limit: 50 * 1024 * 1024
@@ -28,19 +31,27 @@ app.get('/', (req, res) => {
 })
 
 app.get('/upload', (req, res) => {
-  const uploadHtml = `
-  <label class="file-label" for="btnForm">
-    <input id="btnForm" type="file" name="resume">
-  </label>
-  <button id="handformFile">upload file</button>
-  <script src="/public/js/index.js"></script>
-  `
+  const loginVal = req.cookies.key
+  let uploadHtml = ""
+  if (loginVal === "readbook") {
+    uploadHtml = `
+    <label class="file-label" for="btnForm">
+      <input id="btnForm" type="file" name="resume">
+    </label>
+    <button id="handformFile">upload file</button>
+    <script src="/public/js/index.js"></script>
+    `
+  }
   res.send(uploadHtml)
 })
 
 
 
 app.post("/uploadFormFile", (req, res) => {
+  const loginVal = req.cookies.key
+  if (loginVal !== "readbook") {
+    return ;
+  }
   let sampleFile;
   let uploadPath;
 
