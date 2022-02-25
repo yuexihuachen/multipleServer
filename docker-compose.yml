@@ -5,6 +5,8 @@ services:
             context: ./app
         ports:
             - "5000:5000"
+        volumes:
+            - /home/guozishu/localDb:/usr/src/document/server/localDb
     nodeserver1:
         build:
             context: ./pdfBooks
