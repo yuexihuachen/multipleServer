@@ -5,7 +5,7 @@ const fd = new FormData();
 
 function uploadFile(){
   if (fd.has("time")) {
-    fetch('/setFile', {
+    fetch('/media/setFile', {
       method: 'POST',
       body: fd
     })
@@ -31,7 +31,7 @@ document.getElementById("submit").onclick = function () {
   const js = document.getElementById("jsText").value
   const page = document.getElementById("state").value
 
-  const url = '/write';
+  const url = '/media/write';
   const data = { 
     html: encodeURIComponent(html),
     js: encodeURIComponent(js),
