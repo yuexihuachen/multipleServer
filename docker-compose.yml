@@ -3,6 +3,8 @@ services:
     nodeserver:
         build:
             context: ./document
+        environment:
+            - NODE_ENV=production
         ports:
             - "5000:5000"
     nodeserver1:
